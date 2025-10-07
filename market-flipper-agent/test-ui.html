@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Flipper Agent - Test UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #333; }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border-left: 4px solid #007bff;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 Market Flipper Agent - Test UI</h1>
+
+    <div class="section" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+        <h3>⚠️ Demo Mode Notice</h3>
+        <p><strong>This demo uses simulated marketplace data.</strong> The listings, prices, and URLs are generated for demonstration purposes to showcase the agent's architecture and decision-making logic.</p>
+        <p>In a production environment, this would integrate with:</p>
+        <ul>
+            <li>Official marketplace APIs (eBay API, Facebook Marketplace API)</li>
+            <li>Real-time web scraping with anti-bot handling</li>
+            <li>Actual marketplace listing data</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>API Base URL</h2>
+        <code>https://svc-01k6k5fjyd9amzg26kz7n3hyrk.01k507j1ctjqm9r2t725jq93x1.lmapp.run</code>
+    </div>
+
+    <div class="section">
+        <h2>1. Get Agent Status</h2>
+        <button onclick="getStatus()">Get Status</button>
+        <pre id="status-output">Click button to fetch status...</pre>
+    </div>
+
+    <div class="section">
+        <h2>2. View Inventory</h2>
+        <button onclick="getInventory()">Get Inventory</button>
+        <pre id="inventory-output">Click button to fetch inventory...</pre>
+    </div>
+
+    <div class="section">
+        <h2>3. View Transactions</h2>
+        <button onclick="getTransactions()">Get Transactions</button>
+        <pre id="transactions-output">Click button to fetch transactions...</pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Run Marketplace Scan</h2>
+        <div>
+            <label>Max Per Marketplace:</label>
+            <input type="number" id="maxPerMarketplace" value="5" min="1" max="20">
+            <label>Category:</label>
+            <select id="category">
+                <option value="electronics">Electronics</option>
+                <option value="furniture">Furniture</option>
+                <option value="clothing">Clothing</option>
+                <option value="collectibles">Collectibles</option>
+            </select>
+        </div>
+        <button onclick="runScan()">Run Scan</button>
+        <pre id="scan-output">Click button to run scan...</pre>
+    </div>
+
+    <div class="section">
+        <h2>5. Update Configuration</h2>
+        <div>
+            <label>Budget:</label>
+            <input type="number" id="budget" value="5000" min="100">
+            <label>Min Profit Margin:</label>
+            <input type="number" id="minProfitMargin" value="0.20" step="0.01" min="0" max="1">
+            <label>Min Profit:</label>
+            <input type="number" id="minProfit" value="50" min="0">
+        </div>
+        <button onclick="updateConfig()">Update Config</button>
+        <pre id="config-output">Click button to update config...</pre>
+    </div>
+
+    <script>
+        const API_BASE = 'https://svc-01k6k5fjyd9amzg26kz7n3hyrk.01k507j1ctjqm9r2t725jq93x1.lmapp.run';
+
+        async function getStatus() {
+            const output = document.getElementById('status-output');
+            output.innerHTML = '<span class="loading">Loading...</span>';
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                const data = await response.json();
+                output.innerHTML = JSON.stringify(data, null, 2);
+                output.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                output.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        async function getInventory() {
+            const output = document.getElementById('inventory-output');
+            output.innerHTML = '<span class="loading">Loading...</span>';
+            try {
+                const response = await fetch(`${API_BASE}/inventory`);
+                const data = await response.json();
+                output.innerHTML = JSON.stringify(data, null, 2);
+                output.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                output.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        async function getTransactions() {
+            const output = document.getElementById('transactions-output');
+            output.innerHTML = '<span class="loading">Loading...</span>';
+            try {
+                const response = await fetch(`${API_BASE}/transactions`);
+                const data = await response.json();
+                output.innerHTML = JSON.stringify(data, null, 2);
+                output.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                output.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        async function runScan() {
+            const output = document.getElementById('scan-output');
+            output.innerHTML = '<span class="loading">Scanning marketplaces... This may take a few seconds...</span>';
+            try {
+                const maxPerMarketplace = parseInt(document.getElementById('maxPerMarketplace').value);
+                const category = document.getElementById('category').value;
+
+                const response = await fetch(`${API_BASE}/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ maxPerMarketplace, category })
+                });
+                const data = await response.json();
+
+                // Format output to show key info
+                if (data.success) {
+                    const summary = {
+                        success: data.success,
+                        timestamp: data.timestamp,
+                        summary: {
+                            listings_found: data.data.listings?.length || 0,
+                            items_evaluated: data.data.evaluated?.length || 0,
+                            buy_decisions: data.data.decisions?.filter(d => d.action === 'BUY').length || 0,
+                            skip_decisions: data.data.decisions?.filter(d => d.action === 'SKIP').length || 0
+                        },
+                        full_data: data.data
+                    };
+                    output.innerHTML = JSON.stringify(summary, null, 2);
+                } else {
+                    output.innerHTML = JSON.stringify(data, null, 2);
+                }
+                output.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                output.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        async function updateConfig() {
+            const output = document.getElementById('config-output');
+            output.innerHTML = '<span class="loading">Updating...</span>';
+            try {
+                const budget = parseInt(document.getElementById('budget').value);
+                const minProfitMargin = parseFloat(document.getElementById('minProfitMargin').value);
+                const minProfit = parseInt(document.getElementById('minProfit').value);
+                const maxPerMarketplace = parseInt(document.getElementById('maxPerMarketplace').value);
+                const category = document.getElementById('category').value;
+
+                const response = await fetch(`${API_BASE}/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        budget,
+                        minProfitMargin,
+                        minProfit,
+                        maxPerMarketplace,
+                        category
+                    })
+                });
+                const data = await response.json();
+                output.innerHTML = JSON.stringify(data, null, 2);
+                output.className = response.ok ? 'success' : 'error';
+            } catch (error) {
+                output.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Auto-load status on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            getStatus();
+        });
+    </script>
+</body>
+</html>

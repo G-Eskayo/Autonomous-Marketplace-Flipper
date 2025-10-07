@@ -1,0 +1,4 @@
+
+> @liquidmetal-ai/raindrop-framework@0.4.4 lint
+> eslint . --max-warnings=0
+

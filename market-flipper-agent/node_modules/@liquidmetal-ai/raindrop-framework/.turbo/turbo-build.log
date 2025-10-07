@@ -1,0 +1,11 @@
+
+
+> @liquidmetal-ai/raindrop-framework@0.4.8 build
+> npm run generate-version && shx rm -rf dist && tsc -b
+
+[1G[0K
+> @liquidmetal-ai/raindrop-framework@0.4.8 generate-version
+> node scripts/generate-version.mjs
+
+[1G[0KGenerated version.ts with version 0.4.8
+[1G[0K⠙[1G[0K[1G[0K⠙[1G[0K

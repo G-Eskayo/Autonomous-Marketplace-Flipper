@@ -1,0 +1,39 @@
+application "market-flipper-agent" {
+
+  // Public API Gateway - Entry point for all external requests
+  service "api-router" {
+    visibility = "public"
+  }
+
+  // Private Services - Internal business logic
+  service "scraper-service" {
+    visibility = "private"
+  }
+
+  service "valuation-service" {
+    visibility = "private"
+  }
+
+  // Stateful Actors - Manage application state
+  actor "decision-actor" {
+    visibility = "application"
+  }
+
+  actor "transaction-actor" {
+    visibility = "application"
+  }
+
+  actor "inventory-actor" {
+    visibility = "application"
+  }
+
+  // SmartBuckets - AI-powered storage for listings, transactions, and inventory
+  smartbucket "flipper-listings" {}
+
+  smartbucket "flipper-transactions" {}
+
+  smartbucket "flipper-inventory" {}
+
+  smartbucket "historical-prices" {}
+
+}
